@@ -33,7 +33,7 @@ export const site = {
     team: "Team Delta Tech",
     client: "Naked Insurance",
     summary:
-      "Building an AI fraud-detection system for insurers that analyzes submitted claims — across image, PDF, and video — to flag fraudulent activity and cut down on fraudulent payouts.",
+      "Building an AI fraud-detection system for insurers that analyzes submitted claims across image, PDF, and video, to flag fraudulent activity and cut down on fraudulent payouts.",
   },
 
   email: "makelanatshepiso2005@gmail.com",
