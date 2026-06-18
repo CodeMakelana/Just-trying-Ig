@@ -1,26 +1,158 @@
 @import "tailwindcss";
 
+/*
+  ────────────────────────────────────────────────────────────
+  Design tokens — dark & immersive, tuned for eye comfort
+  ────────────────────────────────────────────────────────────
+  • Base is near-black with a faint cool tint (never #000 → avoids
+    halation against bright text).
+  • Foreground is soft off-white (never #fff → cuts glare).
+  • Depth comes from layered surfaces, not heavy borders.
+  • A single luminous --accent is the only chromatic voice; it is
+    swapped per-theme on /palette so the user can choose by eye.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds & surfaces (elevation steps) */
+  --background: #0a0b0f;
+  --surface: #0e0f15;
+  --elevated: #14161d;
+
+  /* Lines / hairlines */
+  --line: #20232e;
+  --line-strong: #2b2f3d;
+
+  /* Text */
+  --foreground: #e8eaf0;
+  --muted: #9aa1b2;
+  --faint: #626a7b;
+
+  /* Accent (default — overridden on /palette previews) */
+  --accent: #2dd4bf;
+  --accent-strong: #14b8a6;
+  --accent-contrast: #04130f;
+
+  /* Radii */
+  --radius: 0.875rem;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-contrast: var(--accent-contrast);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-space-grotesk);
+
+  --radius-xl: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Ambient glow — a single soft bloom anchored top-center.
+   Used sparingly so the page feels immersive, not busy. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      60rem 40rem at 50% -10%,
+      color-mix(in oklab, var(--accent) 14%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      40rem 30rem at 85% 10%,
+      color-mix(in oklab, var(--accent) 7%, transparent),
+      transparent 60%
+    );
+}
+
+/* Fine grain — kills banding on the dark gradients. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Selection picks up the accent. */
+::selection {
+  background: color-mix(in oklab, var(--accent) 30%, transparent);
+  color: var(--foreground);
+}
+
+/* Quiet, on-brand scrollbar. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 999px;
+  border: 3px solid var(--background);
+}
+
+/* Accessible focus ring. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect users who prefer less motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@layer components {
+  /* Small uppercase tracking label used for section eyebrows. */
+  .eyebrow {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
 }
